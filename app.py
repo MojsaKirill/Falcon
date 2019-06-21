@@ -1,12 +1,12 @@
-import json, falcon
+import falcon
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-class ObjRequestClass:
-    def on_get(self, req, resp):
-        content = {
-            'name': "falcon"
-        }
-        resp.body = json.dumps(content)
+from api.user import UserController
+from database import DB_URL
 
+engine = create_engine(DB_URL, echo=True)
+sessionmaker = sessionmaker(bind=engine)
 
 api = falcon.API()
-api.add_route('/test', ObjRequestClass())
+api.add_route('/user', UserController(sessionmaker))
